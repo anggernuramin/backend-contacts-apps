@@ -1,0 +1,129 @@
+<div class="main-banner wow fadeIn" id="top" data-wow-duration="1s" data-wow-delay="0.5s">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12 px-3">
+        <div class="row ">
+          <div class="col-lg-6 align-self-center">
+            <div class="left-content show-up header-text wow fadeInLeft" data-wow-duration="1s" data-wow-delay="1s">
+              <div class="row">
+                <div class="col-lg-12">
+                  <h2 class="">Create List Contact  &amp; Download the Results</h2>
+                  <p>Our Contacts app is a comprehensive solution for creating contact lists and organizing contacts easily and efficiently. With an intuitive interface and advanced features, you can quickly add, edit and delete contacts.</p>
+                </div>
+                <div class="col-lg-12">
+                  <div class="white-button first-button scroll-to-section">
+                    <a href="https://github.com/anggernuramin/contact-apps-cli">Download CLI <i class="bi bi-github"></i></a>
+                  </div>
+                  <div class="white-button scroll-to-section">
+                    <a href="https://github.com/anggernuramin/contacts-app-gui" target="_blank">Download GUI <i class="bi bi-github"></i></i></a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="right-image wow fadeInRight" data-wow-duration="1s" data-wow-delay="0.5s">
+              <img src="assets/images/slider-dec.png" alt="">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<section class="container home-contact ">
+  <div class="row ">
+    <div class="col-11 col-lg-9 mx-auto">
+      <h2 class="fs-1 mb-1 fw-semibold">View all your contacts in one place.</h2>
+      <p class="mb-3">In our Contacts Manager application, you can search by name, making it easier to navigate the list and find specific contacts quickly. </p>
+      <table class="table ">
+        <thead>
+          <tr>
+            <th scope="col">No</th>
+            <th scope="col">Name</th>
+            <th scope="col">No HandPhone</th>
+
+            <th scope="col">Action</th>
+
+          </tr>
+        </thead>
+        <tbody>
+          <% contacts.map((item,index)=> { %>
+            <tr >
+              <th class="py-3" scope="row"><%- index+1 %></th>
+              <td class="py-3"><%- item?.name %></td>
+              <td class="py-3"><%- item?.nohp %></td>
+              <td class="d-flex  gap-3 py-3 mt-1 ">
+
+                <span class="badge text-bg-success bg-success d-flex gap-2">
+                  <i class="bi bi-info-circle"></i>
+                  Detail</span>
+                <span class="badge text-bg-danger bg-danger d-flex gap-2">
+                  <i class="bi bi-trash3-fill"></i>
+                  Delete</span><span class="badge text-bg-warning bg-warning d-flex gap-2">
+                    <i class="bi bi-arrow-repeat"></i>
+                  Update</span>
+
+              </td>
+            </tr>
+
+            <% }) %>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</section>
+
+<div id="services" class="services section">
+  <div class="container wrapper-services">
+    <div class="row">
+      <div class="col-lg-8 offset-lg-2">
+        <div class="section-heading  wow fadeInDown" data-wow-duration="1s" data-wow-delay="0.5s">
+          <h4>Amazing <em>Services &amp; Features</em> for you</h4>
+          <img src="assets/images/heading-line-dec.png" alt="">
+          <p>Explore a world of unmatched convenience with our incredible suite of service features. Our platform offers a suite of tools designed to increase your productivity and simplify your daily tasks. Our innovative features empower you to achieve more with ease.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container wrapper-services">
+    <div class="row">
+      <div class="col-lg-3">
+        <div class="service-item">
+          <i class="bi bi-plus-square-fill icon"></i>
+          <h4>Create Contact</h4>
+          <p>
+           Provides a seamless way to capture and store important details. With just a few clicks, you can input names, phone numbers, emails.</p>
+          
+        </div>
+      </div>
+      <div class="col-lg-3">
+        <div class="service-item ">
+          <i class="bi bi-book-fill icon"></i>
+          <h4>Read Contact</h4>
+          <p>Enables quick access to vital contact information, enhancing communication efficiency and facilitating seamless connections.</p>
+          
+        </div>
+      </div>
+      <div class="col-lg-3">
+        <div class="service-item ">
+          <i class="bi bi-arrow-repeat icon"></i>
+          <h4>Update Contact</h4>
+          <p>Simplifies contact management, allowing effortless editing of contact details for accuracy and relevance.</p>
+          
+        </div>
+      </div>
+      <div class="col-lg-3">
+        <div class="service-item ">
+          <i class="bi bi-trash3-fill icon"></i>
+          <h4>Delete Contact</h4>
+          <p>Delete swiftly removes unwanted entries, ensuring a clutter-free contact list for streamlined organization.</p>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,151 @@
+
+.wrapper-main{
+    padding-top: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+    overflow: hidden;
+}
+.wrapper-footer, .wrapper-services{
+    width: 80%;
+}
+.wrapper-contact{
+    padding: 0 45px 0 35px;
+}
+
+.img-logo{
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 50%;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    -ms-border-radius: 50%;
+    -o-border-radius: 50%;
+}
+
+.home-contact{
+    margin-top: -70px;
+}
+.home-contact h2,.home-contact p{
+    text-align: center;
+}
+.home-contact p{
+    line-height: 20px;
+}
+.home-contact table{
+    /* overflow: scroll; */
+}
+.container-about{
+    width: 80%;
+}
+#button-delete{
+    background-color: transparent;
+    border: none;
+    outline: none;
+}
+.list-contact{
+    margin-top: -20px;
+}
+.border-button{
+    border: 2px solid blue;
+    background-color: transparent;
+}
+
+.btn-download {
+    display: inline-block !important;
+    padding: 5px 20px !important;
+    color: #4b8ef1 !important;
+    border: 1px solid #4b8ef1;
+    text-transform: capitalize;
+    font-size: 15px;
+    display: inline-block;
+    background-color: #fff;
+    border-radius: 23px;
+    font-weight: 500 !important;
+    letter-spacing: 0.3px !important;
+    transition: all .5s;
+  }
+  
+  .border-button a:hover {
+    background-color: #4b8ef1;
+    color: #fff !important;
+  }
+.dropdown-gradient-button {
+    display: inline-block !important;
+    padding: 2px 20px !important;
+    color: #fff !important;
+    text-transform: capitalize;
+    font-size: 15px;
+    background: rgb(19,175,240);
+    background: linear-gradient(105deg, rgba(91,104,235,1) 0%, rgba(40,225,253,1) 100%);
+    border-radius: 23px;
+    font-weight: 500 !important;
+    letter-spacing: 0.3px !important;
+    transition: all .5s;
+}
+  .button{
+    outline: none;
+    border: none;
+    background-color: transparent;
+}
+
+.table-body{
+    padding: 100px !important;
+}
+.search{
+    padding: 0 20px;
+    border-radius: 40px;
+    border: 1px solid #4b8ef1;
+    height: 35px !important;
+    -webkit-border-radius: 40px;
+    -moz-border-radius: 40px;
+    -ms-border-radius: 40px;
+    -o-border-radius: 40px;
+    position: relative;
+    overflow: hidden;
+}
+.search button {
+   line-height: 60px;
+    height: 60px;
+    width: 50px;
+    position: absolute;
+    right:-1px;
+    top: -13px;
+    background: linear-gradient(105deg, rgba(91,104,235,1) 0%, rgba(40,225,253,1) 100%);
+    color: white;
+    font-weight: bold;
+}
+.search input {
+    border: 0;
+    outline: 0;
+}
+.empty-contact{
+    margin-top: 50px;
+    font-size: 18px;
+    text-align: left;
+    color: orange;
+    font-style: italic;
+}
+.description-aboutCode{
+    display: block;
+    width: 70%;
+}
+/* .navbar-nav{
+    gap: 20px;
+}
+.nav-item{
+    font-weight: 500;
+}
+
+.navbar{
+    width: 100%;
+    top: 0;
+   
+}
+.list-errors{
+    list-style-type: none;
+    margin-left: -32px;
+} */

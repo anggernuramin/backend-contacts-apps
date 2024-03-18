@@ -84,6 +84,10 @@ app.get("/", (req, res) => {
         nohp: "08827389279832",
       },
     ];
+
+    res.setHeader("Content-Type", "application/json"); // Menambahkan header Content-Type
+    res.setHeader("Access-Control-Allow-Origin", "*"); // Menambahkan header CORS
+
     res.status(200).json({
       status: "success",
       data: defaultContacts,

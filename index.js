@@ -117,6 +117,8 @@ app.get("/about", (req, res) => {
 // halaman contact
 app.get("/contact", async (req, res) => {
   // Contact adalah nama collection
+  res.setHeader("Content-type", "application/json");
+  res.setHeader("Access-Control-Allow-Origin", "*");
   try {
     const contacts = await Contact.find();
     console.log("🚀 ~ app.get ~ contacts:", contacts);
@@ -356,13 +358,12 @@ app.get("/cli", (req, res) => {
 
 // home not found
 app.use((req, res) => {
-  res.status(404);
-  res.render("not-found", {
-    title: "Not-found Page",
-    url: req.url,
-    layout: "layouts/main-layout",
+  res.status(404).json({
+    message: "Halaman tidak ditemukan",
+    status: 404,
   });
 });
+
 app.listen(port, () => {
   console.log(`listening in port ${port}`);
 });

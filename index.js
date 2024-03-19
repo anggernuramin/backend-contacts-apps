@@ -316,13 +316,16 @@ app.put(
 );
 
 app.get("/contact/update/:id", async (req, res) => {
-  const contact = await Contact.findOne({ _id: req.params.id });
-  res.render("update-contact", {
-    title: "Page Update Contact",
-    url: req.url,
-    layout: "layouts/main-layout",
-    contact,
-  });
+  try {
+    const contact = await Contact.findOne({ _id: req.params.id });
+    res.status(200).json({
+      status: "success",
+      data: defaultContacts,
+      message: "Data kontak berhasil dimuat",
+    });
+  } catch (error) {
+    res.status(500).json(error);
+  }
 });
 
 // halaman tambah contact
@@ -336,15 +339,24 @@ app.get("/contact/add", (req, res) => {
 
 // halaman detail contact
 app.get("/contact/:id", async (req, res) => {
-  // ngequery ke mongo untuk mengambil contact berdarkan id
-  const contact = await Contact.findOne({ _id: req.params.id });
-
-  res.render("detail-contact", {
-    layout: "layouts/main-layout",
-    url: req.url,
-    title: "Detail Contact Page",
-    contact,
-  });
+  try {
+    // ngequery ke mongo untuk mengambil contact berdarkan id
+    const contact = await Contact.findOne({ _id: req.params.id });
+    res.status(200).json({
+      status: "success",
+      data: contact,
+      message: "Data kontak berhasil dimuat",
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: "error",
+      message: "Gagal memuat data kontak",
+      error: {
+        code: 500,
+        description: error.message,
+      },
+    });
+  }
 });
 
 // halaman cli

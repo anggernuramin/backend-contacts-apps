@@ -251,10 +251,11 @@ app.post("/search/contact", (req, res) => {
 
 // method delete contact
 app.delete("/contact", async (req, res) => {
+  console.log(req.params.id);
   try {
     res.setHeader("Content-Type", "application/json");
     res.setHeader("Access-Control-Allow-Origin", "*");
-    await Contact.deleteOne({ _id: req.body.id });
+    await Contact.deleteOne({ id: req.params.id });
     res.status(200).json({
       status: "succes",
       message: "Data berhasil di hapus.",
@@ -265,8 +266,6 @@ app.delete("/contact", async (req, res) => {
       message: error.message,
     });
   }
-  req.flash("notification", "Data berhasil dihapus");
-  res.redirect("/contact");
 });
 
 //  method update

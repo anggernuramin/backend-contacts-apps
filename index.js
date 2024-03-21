@@ -252,7 +252,6 @@ app.post("/search/contact", (req, res) => {
 // method delete contact
 app.delete("/contact", async (req, res) => {
   try {
-    res.setHeader("Content-Type", "application/json");
     res.setHeader("Access-Control-Allow-Origin", "*");
     await Contact.deleteOne({ _id: req.query.id });
     res.status(200).json({
@@ -340,13 +339,13 @@ app.get("/contact/update/:id", async (req, res) => {
 });
 
 // halaman tambah contact
-app.get("/contact/add", (req, res) => {
-  res.render("add-contact", {
-    title: "Add Contact Page",
-    url: req.url,
-    layout: "layouts/main-layout",
-  });
-});
+// app.get("/contact/add", (req, res) => {
+//   res.render("add-contact", {
+//     title: "Add Contact Page",
+//     url: req.url,
+//     layout: "layouts/main-layout",
+//   });
+// });
 
 // halaman detail contact
 app.get("/contact/:id", async (req, res) => {

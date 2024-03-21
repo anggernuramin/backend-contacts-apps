@@ -250,11 +250,11 @@ app.post("/search/contact", (req, res) => {
 });
 
 // method delete contact
-app.delete("/contact/:id", async (req, res) => {
+app.delete("/contact", async (req, res) => {
   try {
     res.setHeader("Content-Type", "application/json");
     res.setHeader("Access-Control-Allow-Origin", "*");
-    await Contact.deleteOne({ _id: req.params.id });
+    await Contact.deleteOne({ _id: req.query.id });
     res.status(200).json({
       status: "succes",
       message: "Data berhasil di hapus.",
@@ -355,6 +355,13 @@ app.get("/contact/:id", async (req, res) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
     // ngequery ke mongo untuk mengambil contact berdarkan id
     const contact = await Contact.findOne({ _id: req.params.id });
+
+    if (contact.length === 0) {
+      res.status(404).json({
+        status: "error",
+        message: "Gagal memuat data kontak",
+      });
+    }
     res.status(200).json({
       status: "success",
       data: contact,

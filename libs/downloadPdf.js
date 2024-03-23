@@ -25,8 +25,10 @@ export const generateToPdf = async () => {
     head: headers,
     body: rows,
   });
-
+  let data = "";
   // Menyimpan dokumen PDF ke dalam file
   const pdfFilePath = "./data/contacts.pdf"; // Path untuk menyimpan file PDF
-  doc.save(pdfFilePath); // menyimpan hasil generate json to pdf ke file contacts.pdf
+  const buffer = doc.save(data); // menyimpan hasil generate json to pdf ke file contacts.pdf
+
+  return pdfBlob;
 };

@@ -1,5 +1,4 @@
 import csvjson from "csvjson";
-import fs from "fs";
 import Contact from "../model/contacts.js";
 export const generateToCsv = async () => {
   const contacts = await Contact.find();
@@ -13,6 +12,7 @@ export const generateToCsv = async () => {
     // ubah json ke csv (file excell)
     headers: "key", // mensetting key yang ada di object menjadi header pada file csv
   });
+  console.log("🚀 ~ generateToCsv ~ csvData:", csvData);
 
-  await fs.promises.writeFile("./data/contacts.csv", csvData);
+  return csvData;
 };

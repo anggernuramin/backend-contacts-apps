@@ -16,6 +16,7 @@ app.use(bodyParser.json()); // to convert the request into JSON
 import { connectDb } from "./utils/db.js"; // connect database
 connectDb();
 import Contact from "./model/contacts.js"; // schema database
+import FileDownload from "./model/fileDownload.js";
 import { generateToPdf } from "./libs/downloadPdf.js";
 import { generateToCsv } from "./libs/downloadCsv.js";
 
@@ -137,19 +138,19 @@ app.post("/contact/download", async (req, res) => {
   // res.download("data/contacts.json");
   const typeFile = req.body.typeFile;
   console.log("🚀 ~ app.post ~ body:", req.body.typeFile);
-  const dirPath = "./data";
-  const dataPath = `./data/contacts.${typeFile}`;
-  // buat direktory data jika belum ada
+  // const dirPath = "./data";
+  // const dataPath = `./data/contacts.${typeFile}`;
+  // // buat direktory data jika belum ada
 
-  fs.stat(dirPath, (err) => {
-    if (err) {
-      fs.mkdirSync(dirPath);
-    }
-  });
+  // fs.stat(dirPath, (err) => {
+  //   if (err) {
+  //     fs.mkdirSync(dirPath);
+  //   }
+  // });
 
-  if (!fs.existsSync(dataPath)) {
-    fs.writeFileSync(dataPath, "[]");
-  }
+  // if (!fs.existsSync(dataPath)) {
+  //   fs.writeFileSync(dataPath, "[]");
+  // }
 
   if (typeFile === "json") {
     const contacts = await Contact.find();
@@ -159,15 +160,14 @@ app.post("/contact/download", async (req, res) => {
     res.send(jsonData);
   }
   if (typeFile === "pdf") {
-    generateToPdf();
-    const pdfBuffer = fs.readFileSync(dataPath);
+    const pdfBuffer = await generateToPdf();
     console.log("🚀 ~ app.post ~ pdfBuffer:", pdfBuffer);
     return res.send(pdfBuffer);
   }
 
   if (typeFile === "csv") {
-    generateToCsv();
-    const csvBuffer = fs.readFileSync(dataPath);
+    const csvBuffer = await generateToCsv();
+    // const csvBuffer = fs.readFileSync(dataPath);
     return res.send(csvBuffer);
   }
 });

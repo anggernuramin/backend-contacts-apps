@@ -135,7 +135,8 @@ app.get("/contact", async (req, res) => {
 // post handle download file
 app.post("/contact/download", async (req, res) => {
   // res.download("data/contacts.json");
-  const typeFile = req.body.downloadFile;
+  const typeFile = req.body.typeFile;
+  console.log("🚀 ~ app.post ~ body:", req.body.typeFile);
   const dirPath = "./data";
   const dataPath = `./data/contacts.${typeFile}`;
   // buat direktory data jika belum ada
@@ -150,19 +151,24 @@ app.post("/contact/download", async (req, res) => {
     fs.writeFileSync(dataPath, "[]");
   }
 
-  if (typeFile === "Json") {
+  if (typeFile === "json") {
     const contacts = await Contact.find();
     await fs.promises.writeFile(dataPath, JSON.stringify(contacts));
-    res.download(dataPath);
+    const jsonData = JSON.stringify(contacts);
+    console.log("🚀 ~ app.post ~ jsonData:", jsonData);
+    res.send(jsonData);
   }
-  if (typeFile === "Pdf") {
+  if (typeFile === "pdf") {
     generateToPdf();
-    res.download(dataPath);
+    const pdfBuffer = fs.readFileSync(dataPath);
+    console.log("🚀 ~ app.post ~ pdfBuffer:", pdfBuffer);
+    return res.send(pdfBuffer);
   }
 
   if (typeFile === "csv") {
     generateToCsv();
-    res.download(dataPath);
+    const csvBuffer = fs.readFileSync(dataPath);
+    return res.send(csvBuffer);
   }
 });
 

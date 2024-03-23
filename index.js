@@ -1,15 +1,17 @@
 import {} from "dotenv/config.js";
 import express from "express";
+import cors from "cors";
 import fs, { stat, writeFileSync } from "fs";
-import expressLayouts from "express-ejs-layouts";
 import cookieParser from "cookie-parser";
 import session from "express-session";
 import flash from "connect-flash";
 import { body, check, validationResult } from "express-validator";
-import methodOverride from "method-override";
+import bodyParser from "body-parser";
 
 const app = express();
 const port = process.env.PORT || 3000;
+app.use(cors()); // to allow cross origin requests
+app.use(bodyParser.json()); // to convert the request into JSON
 
 import { connectDb } from "./utils/db.js"; // connect database
 connectDb();
@@ -19,9 +21,6 @@ import { generateToCsv } from "./libs/downloadCsv.js";
 
 // start middleware
 app.use(express.static("public"));
-app.use(expressLayouts);
-app.set("views", "views");
-app.set("view engine", "ejs");
 
 // create flash message
 app.use(flash());
@@ -36,7 +35,7 @@ app.use(
 );
 // end falsh message
 app.use(express.urlencoded({ extended: true })); // mengambil value dari form
-app.use(methodOverride("_method")); // package digunakan untuk menoverride http
+// app.use(methodOverride("_method")); // package digunakan untuk menoverride http
 // end middleware
 
 // halaman home
@@ -105,15 +104,6 @@ app.get("/", (req, res) => {
   }
 });
 
-// halaman about
-app.get("/about", (req, res) => {
-  res.render("about", {
-    title: "About Page",
-    url: req.url,
-    layout: "layouts/main-layout",
-  });
-});
-
 // halaman contact
 app.get("/contact", async (req, res) => {
   // Contact adalah nama collection
@@ -121,7 +111,9 @@ app.get("/contact", async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   try {
     const contacts = await Contact.find();
-    console.log("🚀 ~ app.get ~ contacts:", contacts);
+    if (!contacts) {
+      throw new Error("No Contacts List Found");
+    }
     res.status(200).json({
       status: "success",
       data: contacts,
@@ -174,7 +166,6 @@ app.post("/contact/download", async (req, res) => {
   }
 });
 
-// post form tambah data contact
 app.post(
   "/contact",
   [
@@ -195,64 +186,83 @@ app.post(
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      res.render("add-contact", {
-        title: "Page Add Contact",
-        url: req.url,
-        layout: "layouts/main-layout",
-        errors: errors.array(),
+      return res.status(400).json({
+        status: "error",
+        message: errors.array(),
       });
     } else {
-      // tambah 0 ke no hp  jika no hp adalah indonesia
-      console.log(req.body);
-
-      await Contact.insertMany(req.body);
-      req.flash("notification", "Data berhasil ditambkan");
-      res.redirect("/contact");
+      try {
+        // tambah 0 ke no hp jika no hp adalah indonesia
+        await Contact.insertMany(req.body);
+        req.flash("notification", "Data berhasil ditambkan");
+        return res.status(200).json({
+          status: "success",
+          message: "Data Berhasil ditambahkan",
+        });
+      } catch (error) {
+        return res.status(500).json({
+          status: "error",
+          message: error.message,
+        });
+      }
     }
   }
 );
 
 // halaman hasil search contact
 app.get("/contact/search", async (req, res) => {
-  const query = req.query.q; // Mendapatkan nilai parameter pencarian dari URL yaitu q (sesaui dengan keyword setelah tanda "contact/search/?")
-  const searchContact = await Contact.find({
-    name: { $regex: query, $options: "i" },
-  }); // mengambil menggunakan regex ke data dengan ketentuan apapun nama yang mengandung kata pada query dan option i artinya kata akan case senstitif ada huruf kecil atau besar yang sama pada query maka data akan ditampilkan
-  if (searchContact.length > 0) {
-    res.render("contact", {
-      title: "Search Contact",
-      url: req.url,
-      layout: "layouts/main-layout",
-      contacts: searchContact,
-      messageError: "",
-      notification: req.flash("notification"),
-    });
-  } else {
-    res.render("contact", {
-      title: "Search Contact",
-      url: req.url,
-      layout: "layouts/main-layout",
-      contacts: [],
-      messageError: "Hasil pencarian tidak ditemukan",
-      notification: req.flash("notification"),
+  try {
+    const query = req.query.q; // Mendapatkan nilai parameter pencarian dari URL yaitu q (sesaui dengan keyword setelah tanda "contact/search/?")
+    const searchContact = await Contact.find({
+      name: { $regex: query, $options: "i" },
+    }); // mengambil menggunakan regex ke data dengan ketentuan apapun nama yang mengandung kata pada query dan option i artinya kata akan case senstitif ada huruf kecil atau besar yang sama pada query maka data akan ditampilkan
+    if (searchContact?.length > 0) {
+      res.status(200).json({
+        status: "success",
+        contacts: searchContact,
+      });
+    } else {
+      res.status(200).json({
+        status: "success",
+        message: "Data Kontak Tidak ditemui",
+        contacts: [],
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      status: "error",
+      message: error.message,
     });
   }
 });
 
 // post from search contact yang akan menamgambil dari dat dari query
 app.post("/search/contact", (req, res) => {
-  // Ambil value yang dikirim di form search
-  const query = req.body.search;
-  // gunakan encodedURIComponent agar query diubah ke format url yang valid misal tanda spasi akan diganti %20 ke format url
-  const searchUrl = `/contact/search?q=${encodeURIComponent(query)}`;
-  // redirect ke halaman /seacrh/contact?q=========
-  res.redirect(searchUrl);
+  try {
+    // Ambil value yang dikirim di form search
+    const query = req.body.search;
+    // gunakan encodedURIComponent agar query diubah ke format url yang valid misal tanda spasi akan diganti %20 ke format url
+    const searchUrl = `/contact/search?q=${encodeURIComponent(query)}`;
+    // redirect ke halaman /seacrh/contact?q=========
+    // res.redirect(searchUrl);
+
+    return res.status(200).json({
+      status: "succes",
+      message: "Query  received!",
+      searchUrl: `/contact/search?q=${query}`,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: "error",
+      message: error.message,
+    });
+  }
 });
 
 // method delete contact
 app.delete("/contact", async (req, res) => {
+  console.log(req.query.id);
   try {
-    res.setHeader("Access-Control-Allow-Origin", "*");
     await Contact.deleteOne({ _id: req.query.id });
     res.status(200).json({
       status: "succes",
@@ -270,6 +280,7 @@ app.delete("/contact", async (req, res) => {
 app.put(
   "/contact",
   [
+    // isi dari check("") mengacu pada req body yang dikirim di frontend
     check("nohp")
       .isMobilePhone("id-ID")
       .withMessage("No hp yang anda masukkan tidak valid."),
@@ -278,22 +289,21 @@ app.put(
       .withMessage("Email yang anda masukkan tidak valid"),
     body("name").custom(async (value, { req }) => {
       const duplikat = await Contact.findOne({ name: value });
+
       //  jika nama diubah dan nama yang baru sudah ada di db maka akan return/throw pesan error
-      if (req.body.oldName != value && duplikat?.name === value) {
-        throw new Error("Nama sudah ada dalam contact.Gunakan nama yang lain");
+      if (req.body.oldname != value && duplikat?.name === value) {
+        throw new Error("Nama sudah ada dalam contact. Gunakan nama yang lain");
       }
       return true;
     }),
   ],
   async (req, res) => {
+    console.log("data", req.body);
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      res.render("update-contact", {
-        title: "Update Contact Page",
-        url: req.url,
-        layout: "layouts/main-layout",
-        errors: errors.array(),
-        contact: req.body,
+      return res.status(400).json({
+        status: "error",
+        message: errors.array(),
       });
     } else {
       // Jika data tidak berubah
@@ -304,7 +314,10 @@ app.put(
         contact?.email === req.body.email &&
         contact?.nohp === req.body.nohp
       ) {
-        res.redirect("/contact");
+        res.status(200).json({
+          status: "success",
+          message: "Data Berhasil Di update",
+        });
       } else {
         await Contact.updateOne(
           {
@@ -318,43 +331,24 @@ app.put(
             },
           }
         );
+
         req.flash("notification", "Data berhasil diupdate");
-        res.redirect("/contact");
+        res.status(200).json({
+          status: "success",
+          message: "Data Berhasil Di update",
+        });
       }
     }
   }
 );
 
-app.get("/contact/update/:id", async (req, res) => {
-  try {
-    const contact = await Contact.findOne({ _id: req.params.id });
-    res.status(200).json({
-      status: "success",
-      data: defaultContacts,
-      message: "Data kontak berhasil dimuat",
-    });
-  } catch (error) {
-    res.status(500).json(error);
-  }
-});
-
-// halaman tambah contact
-// app.get("/contact/add", (req, res) => {
-//   res.render("add-contact", {
-//     title: "Add Contact Page",
-//     url: req.url,
-//     layout: "layouts/main-layout",
-//   });
-// });
-
 // halaman detail contact
 app.get("/contact/:id", async (req, res) => {
+  console.log("🚀 ~ app.get ~ req:", req);
+
   try {
-    res.setHeader("Content-Type", "application/json");
-    res.setHeader("Access-Control-Allow-Origin", "*");
     // ngequery ke mongo untuk mengambil contact berdarkan id
     const contact = await Contact.findOne({ _id: req.params.id });
-
     if (contact.length === 0) {
       res.status(404).json({
         status: "error",
@@ -376,15 +370,6 @@ app.get("/contact/:id", async (req, res) => {
       },
     });
   }
-});
-
-// halaman cli
-app.get("/cli", (req, res) => {
-  res.render("cli", {
-    title: "Page CLI Contact",
-    url: req.url,
-    layout: "layouts/main-layout",
-  });
 });
 
 // home not found

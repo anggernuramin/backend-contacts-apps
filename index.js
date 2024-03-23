@@ -135,40 +135,43 @@ app.get("/contact", async (req, res) => {
 
 // post handle download file
 app.post("/contact/download", async (req, res) => {
-  // res.download("data/contacts.json");
-  const typeFile = req.body.typeFile;
-  console.log("🚀 ~ app.post ~ body:", req.body.typeFile);
-  // const dirPath = "./data";
-  // const dataPath = `./data/contacts.${typeFile}`;
-  // // buat direktory data jika belum ada
+  try {
+    // res.download("data/contacts.json");
+    const typeFile = req.body.typeFile;
+    console.log("🚀 ~ app.post ~ body:", req.body.typeFile);
+    // const dirPath = "./data";
+    // const dataPath = `./data/contacts.${typeFile}`;
+    // // buat direktory data jika belum ada
 
-  // fs.stat(dirPath, (err) => {
-  //   if (err) {
-  //     fs.mkdirSync(dirPath);
-  //   }
-  // });
+    // fs.stat(dirPath, (err) => {
+    //   if (err) {
+    //     fs.mkdirSync(dirPath);
+    //   }
+    // });
 
-  // if (!fs.existsSync(dataPath)) {
-  //   fs.writeFileSync(dataPath, "[]");
-  // }
+    // if (!fs.existsSync(dataPath)) {
+    //   fs.writeFileSync(dataPath, "[]");
+    // }
 
-  if (typeFile === "json") {
-    const contacts = await Contact.find();
-    await fs.promises.writeFile(dataPath, JSON.stringify(contacts));
-    const jsonData = JSON.stringify(contacts);
-    console.log("🚀 ~ app.post ~ jsonData:", jsonData);
-    res.send(jsonData);
-  }
-  if (typeFile === "pdf") {
-    const pdfBuffer = await generateToPdf();
-    console.log("🚀 ~ app.post ~ pdfBuffer:", pdfBuffer);
-    return res.send(pdfBuffer);
-  }
+    if (typeFile === "json") {
+      const contacts = await Contact.find();
+      res.json(contacts);
+    }
+    if (typeFile === "pdf") {
+      const pdfBuffer = await generateToPdf();
+      console.log("🚀 ~ app.post ~ pdfBuffer:", pdfBuffer);
+      return res.send(pdfBuffer);
+    }
 
-  if (typeFile === "csv") {
-    const csvBuffer = await generateToCsv();
-    // const csvBuffer = fs.readFileSync(dataPath);
-    return res.send(csvBuffer);
+    if (typeFile === "csv") {
+      const csvBuffer = await generateToCsv();
+      return res.send(csvBuffer);
+    }
+  } catch (error) {
+    return res.status(500).json({
+      status: "error",
+      message: error.message,
+    });
   }
 });
 
